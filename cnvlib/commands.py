@@ -517,7 +517,7 @@ def _cmd_reference(args):
         ref_probes = reference.do_reference(targets, antitargets, args.fasta,
                                             args.male_reference, female_samples,
                                             args.do_gc, args.do_edge,
-                                            args.do_rmask)
+                                            args.do_rmask, args.do_cluster)
     else:
         raise ValueError(usage_err_msg)
 
@@ -534,18 +534,22 @@ P_reference.add_argument('-f', '--fasta',
         help="Reference genome, FASTA format (e.g. UCSC hg19.fa)")
 P_reference.add_argument('-o', '--output', metavar="FILENAME",
         help="Output file name.")
-P_reference.add_argument('-y', '--male-reference', '--haploid-x-reference',
+P_reference.add_argument('-c', '--cluster',
         action='store_true',
-        help="""Create a male reference: shift female samples' chrX
-                log-coverage by -1, so the reference chrX average is -1.
-                Otherwise, shift male samples' chrX by +1, so the reference chrX
-                average is 0.""")
+        help="""Calculate and store subsets of the normal-sample pool with similar
+                coverage profiles.""")
 P_reference.add_argument('-x', '--sample-sex', '-g', '--gender',
         dest='sample_sex',
         choices=('m', 'y', 'male', 'Male', 'f', 'x', 'female', 'Female'),
         help="""Specify the chromosomal sex of all given samples as male or
                 female. (Default: guess each sample from coverage of X and Y
                 chromosomes).""")
+P_reference.add_argument('-y', '--male-reference', '--haploid-x-reference',
+        action='store_true',
+        help="""Create a male reference: shift female samples' chrX
+                log-coverage by -1, so the reference chrX average is -1.
+                Otherwise, shift male samples' chrX by +1, so the reference chrX
+                average is 0.""")
 
 P_reference_flat = P_reference.add_argument_group(
     "To construct a generic, \"flat\" copy number reference with neutral "
