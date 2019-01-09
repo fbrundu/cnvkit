@@ -355,8 +355,14 @@ def create_clusters(logr_matrix, min_samples=5):
     Return a DataFrame of just the log2 values. Column names are ``log2_i``
     where i=1,2,... .
     """
-    # TODO mcluster
+    from .mcluster import mcluster
+    result = mcluster(logr_matrix)
+    # TODO - take each cluster's central tendency
     cluster_cols = []
+    for clust in result:
+        cvg_centers = np.apply_along_axis(descriptives.biweight_location, 0,
+                                          clust)
+        cluster_cols.append(cvg_centers)
     return cluster_cols
 
 
